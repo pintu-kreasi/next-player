@@ -1,0 +1,38 @@
+[
+  {
+    "title": "2pt",
+    "value": 20
+  },
+  {
+    "title": "3pt",
+    "value": 70
+  },
+  {
+    "title": "free throw",
+    "value": 87
+  },
+  {
+    "title": "assist",
+    "value": 90
+  },
+  {
+    "title": "Off Rebound",
+    "value": 60
+  },
+  {
+    "title": "Def Rebound",
+    "value": 87
+  },
+  {
+    "title": "Steal",
+    "value": 90
+  },
+  {
+    "title": "Blok",
+    "value": 59
+  },
+  {
+    "title": "Turn Over",
+    "value": 90
+  }
+]
