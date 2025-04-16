@@ -1,4 +1,3 @@
-// import "../../app/styles/index.scss"
 import AdminHeader from "./AdminHeader";
 import AdminSidebar from "./AdminSidebar";
 import AdminControlSidebar from "./AdminControlSidebar";

@@ -6,7 +6,7 @@ const AdminFooter = () => {
       <div className="float-right d-none d-sm-block">
         <b>Version</b> 0.1
       </div>
-      <strong>Copyright © 2024 Player.</strong> All rights reserved.
+      <strong>Copyright © 2025 Player.</strong> All rights reserved.
     </footer>
   );
 };

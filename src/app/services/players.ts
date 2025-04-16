@@ -5,21 +5,23 @@ import { resolve } from "path";
 // import { postData } from "../apis/postData";
 
 
-interface Team {
+interface Player {
   name: boolean;
-  location: string;
-  city: any;
+  email: string;
+  dob: any;
+  position: string;
+  team_id: number;
 }
 
-const createTeam = (data:any) => {
+const createPlayer = (data:any) => {
   return new Promise((resolve, reject) => {
     try {
       const res = axiosInstance({
-        url: "/teams",
+        url: "/players",
         method: 'POST',
-        data: {name:data.name, city:data.city}
+        data: data
       }).then((res) => {
-        const response : Team = res.data
+        const response : Player = res.data
         resolve(response)
       }).catch((e) => {
         console.error(e)
@@ -33,15 +35,16 @@ const createTeam = (data:any) => {
   })
 }
 
-const updateTeam = (id:string, data:any) => {
+const updatePlayer = (id:string, data:any) => {
+  console.log({id, data})
   return new Promise((resolve, reject) => {
     try {
       const res = axiosInstance({
-        url: "/teams/"+id,
+        url: "/players/"+id,
         method: 'PUT',
-        data: {name:data.name, city:data.city}
+        data: data
       }).then((res) => {
-        const response : Team = res.data
+        const response : Player = res.data
         resolve(response)
       }).catch((e) => {
         console.error(e)
@@ -55,11 +58,11 @@ const updateTeam = (id:string, data:any) => {
   })
 }
 
-const getTeams = () => {
+const getPlayers = () => {
   return new Promise((resolve, reject) => {
     try {
       const res = axiosInstance({
-        url: '/teams',
+        url: '/players',
         method: 'GET',
       }).then((res) => {
         console.log({res})
@@ -75,11 +78,11 @@ const getTeams = () => {
   })
 }
 
-const getTeamById = (id:string) => {
+const getPlayerById = (id:string) => {
   return new Promise((resolve, reject) => {
     try {
       const res = axiosInstance({
-        url: '/teams/'+id,
+        url: '/players/'+id,
         method: 'GET',
       }).then((res) => {
         resolve(res.data)
@@ -96,8 +99,8 @@ const getTeamById = (id:string) => {
 
 
 export {
-  createTeam,
-  updateTeam,
-  getTeams,
-  getTeamById
+  createPlayer,
+  updatePlayer,
+  getPlayers,
+  getPlayerById
 };

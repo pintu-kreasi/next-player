@@ -5,43 +5,32 @@ import { resolve } from "path";
 // import { postData } from "../apis/postData";
 
 
-interface Team {
-  name: boolean;
-  location: string;
-  city: any;
+interface Skill {
+  player_id: number,
+  dribbling: number,
+  passing: number,
+  shooting: number,
+  defence: number,
+  speed: number,
+  durability: number,
+  power: number,
+  cooperative: number,
+  dicipline: number,
+  effort: number,
 }
 
-const createTeam = (data:any) => {
-  return new Promise((resolve, reject) => {
-    try {
-      const res = axiosInstance({
-        url: "/teams",
-        method: 'POST',
-        data: {name:data.name, city:data.city}
-      }).then((res) => {
-        const response : Team = res.data
-        resolve(response)
-      }).catch((e) => {
-        console.error(e)
-        reject(e)
-      })
-    } catch (e) {
-      // handle error
-      console.error(e);
-      reject(e)
-    }
-  })
-}
 
-const updateTeam = (id:string, data:any) => {
+const updateSkill = (id:string, data:any) => {
   return new Promise((resolve, reject) => {
+    console.log({data, id})
     try {
       const res = axiosInstance({
-        url: "/teams/"+id,
+        url: "/playerSkillStats/"+id,
         method: 'PUT',
-        data: {name:data.name, city:data.city}
+        data: data
       }).then((res) => {
-        const response : Team = res.data
+        console.log({res})
+        const response : Skill = res.data
         resolve(response)
       }).catch((e) => {
         console.error(e)
@@ -55,11 +44,11 @@ const updateTeam = (id:string, data:any) => {
   })
 }
 
-const getTeams = () => {
+const getSkills = () => {
   return new Promise((resolve, reject) => {
     try {
       const res = axiosInstance({
-        url: '/teams',
+        url: '/playerSkillStats',
         method: 'GET',
       }).then((res) => {
         console.log({res})
@@ -75,11 +64,11 @@ const getTeams = () => {
   })
 }
 
-const getTeamById = (id:string) => {
+const getSkillByPlayerId = (id:string) => {
   return new Promise((resolve, reject) => {
     try {
       const res = axiosInstance({
-        url: '/teams/'+id,
+        url: '/playerSkillStats/'+id,
         method: 'GET',
       }).then((res) => {
         resolve(res.data)
@@ -96,8 +85,7 @@ const getTeamById = (id:string) => {
 
 
 export {
-  createTeam,
-  updateTeam,
-  getTeams,
-  getTeamById
+  updateSkill,
+  getSkills,
+  getSkillByPlayerId
 };

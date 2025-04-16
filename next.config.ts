@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
   pageExtensions: ['ts', 'tsx'],
+  sassOptions: {
+    silenceDeprecations: ['legacy-js-api'],
+  }
   /*
   async rewrites() {
     return [

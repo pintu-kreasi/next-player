@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React from "react"
+import React, {useState, useEffect} from "react"
 import AdminLayoutHoc from "@/components/templates/AdminLayoutHoc";
 import { Radar } from 'react-chartjs-2';
 import Chart from "chart.js/auto";
@@ -8,11 +8,16 @@ import SkillItem from '@/components/molecules/SkillItem';
 import dataSkill from "@/data/dummySkill.json";
 import dataGame from "@/data/dummyGame.json";
 import { title } from 'process';
+import { getPlayerById } from '@/app/services/players';
+import Link from 'next/link'
+import { getGameStats, getGameStatsWithParams } from '@/app/services/gameStats';
+
  
 export default function Games() {
+  const [detail, setDetail] = useState({name:'',email:'',dob:'',position:''})
   const router = useRouter()
   const playerId = router.query.id;
-  const playerName = "Budi"+playerId
+  const playerName = detail.name
 
   Chart.register(CategoryScale);
   const dataRadar1 = {
@@ -27,6 +32,34 @@ export default function Games() {
       },
     ]
   }
+
+  const getDetail = async() => {
+    let data = await getPlayerById(playerId)
+    if (data.success) {
+      let newDetail = {
+        name: data.data.name,
+        email: data.data.email,
+        dob: data.data.dob,
+        position: data.data.position,
+      }
+      setDetail(detail => ({...detail, ...newDetail}))
+    }
+
+  }
+
+  const _getGameStats = async() => {
+    let params = {player_id: playerId}
+    let data = await getGameStatsWithParams(params)
+    console.log({data})
+  }
+
+
+  useEffect(() => {
+    if (playerId != undefined) {
+      getDetail();
+      _getGameStats();
+    }
+  }, [playerId])
   
   return <AdminLayoutHoc contentTitle={playerName} contentTitleButton={<i className="fa fa-2x fa-home" />} url={"/"}>
 			<div className="row">
@@ -63,7 +96,9 @@ export default function Games() {
 
                 <h3 className="card-title">List Games Stats</h3>
                 <span>
-                  <i className='fa fa-2x fa-plus-circle text-primary' />
+                <Link className="btn btn-primary btn-block btn-sm" href={'/dashboard/player/'+playerId+'/games/create'}>
+                  <i className='fa fa-2x fa-plus-circle' />
+                </Link>
                 </span>
               </div>
             </div>

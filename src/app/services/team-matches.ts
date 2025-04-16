@@ -2,24 +2,24 @@
 import { rejects } from "assert";
 import axiosInstance from "../apis/axiosInstance"
 import { resolve } from "path";
-// import { postData } from "../apis/postData";
 
 
-interface Team {
-  name: boolean;
+interface TeamMatches {
+  opponent: string;
   location: string;
-  city: any;
+  type: string;
+  team_id: number;
 }
 
-const createTeam = (data:any) => {
+const createTeamMatches = (data:any) => {
   return new Promise((resolve, reject) => {
     try {
       const res = axiosInstance({
-        url: "/teams",
+        url: "/teamMatches",
         method: 'POST',
-        data: {name:data.name, city:data.city}
+        data: {opponent:data.opponent, location:data.location, type:data.type, team_id:data.team_id}
       }).then((res) => {
-        const response : Team = res.data
+        const response : TeamMatches = res.data
         resolve(response)
       }).catch((e) => {
         console.error(e)
@@ -33,15 +33,15 @@ const createTeam = (data:any) => {
   })
 }
 
-const updateTeam = (id:string, data:any) => {
+const updateTeamMatches = (id:string, data:any) => {
   return new Promise((resolve, reject) => {
     try {
       const res = axiosInstance({
-        url: "/teams/"+id,
+        url: "/teamMatches/"+id,
         method: 'PUT',
-        data: {name:data.name, city:data.city}
+        data: {opponent:data.opponent, location:data.location, type:data.type, team_id:data.team_id}
       }).then((res) => {
-        const response : Team = res.data
+        const response : TeamMatches = res.data
         resolve(response)
       }).catch((e) => {
         console.error(e)
@@ -55,11 +55,11 @@ const updateTeam = (id:string, data:any) => {
   })
 }
 
-const getTeams = () => {
+const getTeamMatches = () => {
   return new Promise((resolve, reject) => {
     try {
       const res = axiosInstance({
-        url: '/teams',
+        url: '/teamMatches',
         method: 'GET',
       }).then((res) => {
         console.log({res})
@@ -75,11 +75,11 @@ const getTeams = () => {
   })
 }
 
-const getTeamById = (id:string) => {
+const getTeamMatchesById = (id:string) => {
   return new Promise((resolve, reject) => {
     try {
       const res = axiosInstance({
-        url: '/teams/'+id,
+        url: '/teamMatches/'+id,
         method: 'GET',
       }).then((res) => {
         resolve(res.data)
@@ -94,10 +94,31 @@ const getTeamById = (id:string) => {
   })
 }
 
+const getTeamMatchesByParams = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      const res = axiosInstance({
+        url: '/teamMatches',
+        method: 'GET',
+      }).then((res) => {
+        console.log({res})
+        resolve(res.data)
+      }).catch((e) => {
+        console.error(e)
+        reject(e)
+      })
+    } catch(e) {
+      console.error(e)
+      reject(e)
+    }
+  })
+}
+
 
 export {
-  createTeam,
-  updateTeam,
-  getTeams,
-  getTeamById
+  createTeamMatches,
+  updateTeamMatches,
+  getTeamMatches,
+  getTeamMatchesById,
+  getTeamMatchesByParams,
 };

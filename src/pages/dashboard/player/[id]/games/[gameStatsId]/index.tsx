@@ -123,7 +123,7 @@ export default function Skills() {
           <div className="card">
             <div className="card-header">
               <div className="d-flex justify-content-between">
-                <h3 className="card-title">{modeText} Games Stats</h3>
+                <h3 className="card-title">Edit Games Stats</h3>
                 <span>
                   <i className='fa fa-1x fa-edit text-primary' />
                 </span>

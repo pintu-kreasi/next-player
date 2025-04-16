@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React from "react"
+import React, {useState, useEffect} from "react"
 import AdminLayoutHoc from "@/components/templates/AdminLayoutHoc";
 import { Radar } from 'react-chartjs-2';
 import Chart from "chart.js/auto";
@@ -11,6 +11,8 @@ import { Form, Button } from 'react-bootstrap';
 import { Formik, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { error } from 'console';
+import { getPlayerById } from '@/app/services/players';
+import { getSkillByPlayerId, updateSkill } from '@/app/services/skills';
 
 // Schema for yup
 const validationSchema = Yup.object().shape({
@@ -50,13 +52,13 @@ const validationSchema = Yup.object().shape({
   .integer()
   .min(1)
   .required("*Effort is required"),
-  notes: Yup.string()
-  .min(2, "*Names must have at least 2 characters")
-  .max(255, "*Notes must be less than 100 characters")
-  .required("*Notes is required"),
+  // notes: Yup.string()
+  // .min(2, "*Names must have at least 2 characters")
+  // .max(255, "*Notes must be less than 100 characters")
+  // .required("*Notes is required"),
 });
 
-const formData = {
+const initFormData = {
   dribbling: 0,
   passing: 0,
   shooting: 0,
@@ -70,9 +72,11 @@ const formData = {
 }
  
 export default function Skills() {
+  const [detail, setDetail] = useState({name:'',email:'',dob:'',position:''})
+  const [formData, setFormData] = useState(initFormData)
   const router = useRouter()
   const playerId = router.query.id;
-  const playerName = "Skills Budi"+playerId
+  const playerName = detail.name
 
   Chart.register(CategoryScale);
   const dataRadar1 = {
@@ -87,6 +91,36 @@ export default function Skills() {
       },
     ]
   }
+
+  const _handleSubmit = async(data:any) => {
+    const result = await updateSkill(playerId, data);
+    console.log({result})
+    if (result?.success) router.push('/dashboard/player/'+playerId)
+  }
+
+  const getDetail = async() => {
+    let data = await getPlayerById(playerId)
+    if (data.success) {
+      let newData = {
+        name: data.data.name,
+        email: data.data.email,
+        dob: data.data.dob,
+        position: data.data.position,
+      }
+      setDetail(detail => ({...detail, ...newData}))
+    }
+
+    let skillData = await getSkillByPlayerId(playerId)
+    if (skillData.success) {
+      let newSkillData = skillData.data
+      console.log({newSkillData})
+      setFormData(formData => ({...formData, ...newSkillData}))
+    }
+  }
+
+  useEffect(() => {
+    if (playerId != undefined) getDetail();
+  }, [playerId])
 
   
   return <AdminLayoutHoc contentTitle={playerName} contentTitleButton={<i className="fa fa-2x fa-home" />} url={"/"}>
@@ -114,8 +148,9 @@ export default function Skills() {
             <div className="card-body">
               <Formik
                 initialValues={formData}
+                enableReinitialize={true}
                 validationSchema={validationSchema}
-                onSubmit={() => {alert('onsubmit')}}
+                onSubmit={(values) => {_handleSubmit(values)}}
               >
                 { ({
                   values,

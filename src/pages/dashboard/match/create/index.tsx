@@ -10,28 +10,33 @@ import { Form, Button } from 'react-bootstrap';
 import { Formik, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { error } from 'console';
-import { createTeam } from '@/app/services/teams';
+import { createTeamMatches } from '@/app/services/team-matches';
 
 // Schema for yup
 const validationSchema = Yup.object().shape({
-  name: Yup.string()
-  .required("*Name is required"),
-  city: Yup.string()
-  .required("*city is required"),
+  opponent: Yup.string()
+  .required("*Opponent is required"),
+  location: Yup.string()
+  .required("*Location is required"),
+  type: Yup.string()
+  .required("*Type is required"),
 });
 
 const formData = {
-  name: '',
-  city: '',
+  opponent: '',
+  location: '',
+  type: '',
 }
  
-export default function CreateTeam() {
+export default function CreateMatch() {
   const router = useRouter()
-  const teamId = router.query.id;
-  const teamName = "Team"
+  const teamId = router.query.team_id;
+  const teamName = "Match"
 
   const _handleSubmit = async(data:any) => {
-    const result = await createTeam(data);
+    let newData = {team_id: teamId, ...data}
+    const result = await createTeamMatches(newData);
+    console.log({result})
     if (result?.success) router.push('/dashboard/team')
   }
   
@@ -41,7 +46,7 @@ export default function CreateTeam() {
           <div className="card">
             <div className="card-header">
               <div className="d-flex justify-content-between">
-                <h3 className="card-title">Edit Teams</h3>
+                <h3 className="card-title">Create Match</h3>
                 <span>
                   <i className='fa fa-1x fa-edit text-primary' />
                 </span>
