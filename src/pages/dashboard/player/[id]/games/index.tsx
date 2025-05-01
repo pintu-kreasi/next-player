@@ -14,7 +14,7 @@ import { getGameStats, getGameStatsWithParams } from '@/app/services/gameStats';
 
  
 export default function Games() {
-  const [detail, setDetail] = useState({name:'',email:'',dob:'',position:''})
+  const [detail, setDetail] = useState({name:'',email:'',dob:'',position:'', game_stats: []})
   const router = useRouter()
   const playerId = router.query.id;
   const playerName = detail.name
@@ -36,11 +36,18 @@ export default function Games() {
   const getDetail = async() => {
     let data = await getPlayerById(playerId)
     if (data.success) {
+      let game_stats = data.data.game_stats;
+      game_stats = game_stats.map(item => {
+        let matchSelected = data.data.matches.filter(match => match.id == item.match_id);
+        item.match =  matchSelected[0]??'';
+        return item;
+      });
       let newDetail = {
         name: data.data.name,
         email: data.data.email,
         dob: data.data.dob,
         position: data.data.position,
+        game_stats,
       }
       setDetail(detail => ({...detail, ...newDetail}))
     }
@@ -107,7 +114,7 @@ export default function Games() {
                 <thead>
                   <tr>
                     <th style={{width: "10px"}}>#</th>
-                    <th>Date</th>
+                    <th>Opponent</th>
                     <th>Offense</th>
                     <th>Defence</th>
                     <th>Turnover</th>
@@ -116,98 +123,34 @@ export default function Games() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1.</td>
-                    <td>29 November 2024</td>
-                    <td>
-                      <div className="progress progress-xs">
-                        <div className="progress-bar bg-danger" style={{width: "55%"}}></div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="progress progress-xs">
-                        <div className="progress-bar" style={{width: "55%"}}></div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="progress progress-xs">
-                        <div className="progress-bar" style={{width: "55%"}}></div>
-                      </div>
-                    </td>
-                    <td><span className="badge bg-danger">55%</span></td>
-                    <td>
-                      <button type="button" className="btn btn-primary btn-block btn-sm"><i className="fa fa-edit"></i> Edit</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>2.</td>
-                    <td>23 November 2024</td>
-                    <td>
-                      <div className="progress progress-xs">
-                        <div className="progress-bar bg-warning" style={{width: "70%"}}></div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="progress progress-xs">
-                        <div className="progress-bar bg-danger" style={{width: "55%"}}></div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="progress progress-xs">
-                        <div className="progress-bar" style={{width: "55%"}}></div>
-                      </div>
-                    </td>
-                    <td><span className="badge bg-warning">70%</span></td>
-                    <td>
-                      <button type="button" className="btn btn-primary btn-block btn-sm"><i className="fa fa-edit"></i> Edit</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>3.</td>
-                    <td>20 Novermber 2024</td>
-                    <td>
-                      <div className="progress progress-xs progress-striped active">
-                        <div className="progress-bar bg-primary" style={{width: "30%"}}></div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="progress progress-xs">
-                        <div className="progress-bar bg-danger" style={{width: "55%"}}></div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="progress progress-xs">
-                        <div className="progress-bar" style={{width: "55%"}}></div>
-                      </div>
-                    </td>
-                    <td><span className="badge bg-primary">30%</span></td>
-                    <td>
-                      <button type="button" className="btn btn-primary btn-block btn-sm"><i className="fa fa-edit"></i> Edit</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>4.</td>
-                    <td>14 November 2024</td>
-                    <td>
-                      <div className="progress progress-xs progress-striped active">
-                        <div className="progress-bar bg-success" style={{width: "90%"}}></div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="progress progress-xs">
-                        <div className="progress-bar bg-danger" style={{width: "55%"}}></div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="progress progress-xs">
-                        <div className="progress-bar" style={{width: "55%"}}></div>
-                      </div>
-                    </td>
-                    <td><span className="badge bg-success">90%</span></td>
-                    <td>
-                      <button type="button" className="btn btn-primary btn-block btn-sm"><i className="fa fa-edit"></i> Edit</button>
-                    </td>
-                  </tr>
+                   {
+                      detail.game_stats.map((item, index) => (
+                        <tr key={'player-game-stats-'+index}>
+                          <td>{index+1}</td>
+                          <td>{item?.match?.opponent??''}</td>
+                          <td>
+                            <div className="progress progress-xs">
+                              <div className="progress-bar bg-danger" style={{width: "55%"}}></div>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="progress progress-xs">
+                              <div className="progress-bar" style={{width: "55%"}}></div>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="progress progress-xs">
+                              <div className="progress-bar" style={{width: "55%"}}></div>
+                            </div>
+                          </td>
+                          <td><span className="badge bg-danger">55%</span></td>
+                          <td>
+                            <Link href={'/dashboard/player/'+playerId+'/games/'+item?.match?.id??''} className="btn btn-primary btn-block btn-sm">
+                              <i className="fa fa-edit"></i> Edit
+                            </Link>
+                          </td>
+                        </tr>
+                    ))}
                 </tbody>
               </table>
             </div>

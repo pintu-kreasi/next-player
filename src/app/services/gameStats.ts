@@ -56,7 +56,7 @@ const updateGameStats = (id:string, data:any) => {
       const res = axiosInstance({
         url: "/playerGameStats/"+id,
         method: 'PUT',
-        data: {name:data.name, city:data.city}
+        data: data
       }).then((res) => {
         const response : Team = res.data
         resolve(response)
